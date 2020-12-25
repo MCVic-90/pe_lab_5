@@ -13,16 +13,28 @@ class AllWords:
 
     def pickle_read_file(self, path):
         f = open(path, 'rb')
-        file = pickle.load(f)
+        file = pickle.load(f, encoding='UTF-8')
         self.words = [i for i in file]
 
         return self.words
 
 
+all_words = AllWords().pickle_read_file(path)
+
+
 @app.route('/get_all', methods=['GET'])
 def get_all():
-    res = {'all_words': str(AllWords().pickle_read_file(path))}
+    res = {'all_words': all_words}
     return res
+
+
+@app.route('/is_valid_yo', methods=['GET'])
+def is_valid_yo():
+    word = request.args.get('word')
+
+    res = word in all_words
+
+    return str(res)
 
 
 if __name__ == '__main__':
